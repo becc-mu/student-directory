@@ -1,4 +1,3 @@
-@month = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 @students = [] # an empty array accessible to all methods
 
 def interactive_menu
