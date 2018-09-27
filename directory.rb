@@ -43,22 +43,18 @@ end
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  # get the first name
   name = STDIN.gets.chomp.capitalize
-  # while the name is not empty, repeat this code
   while !name.empty? do
     puts "Please enter the student's cohort"
     cohort = STDIN.gets.chomp.capitalize
     cohort = add_cohort(cohort) if cohort.empty?
-    push_students(name, cohort)
+    @students << {name: name, cohort: cohort.to_sym }
     puts "Now we have #{@students.count} students"
-    # get another name from the user
     name = STDIN.gets.chomp
-
   end
 end
 
-def push_students(name, cohort)
+def push_students_to_array
   @students << {name: name, cohort: cohort.to_sym }
 end
 
@@ -99,6 +95,10 @@ def group_by_cohort(students)
   end.uniq
 end
 
+def print_footer
+  puts "Overall, we have #{@students.count} great students"
+end
+
 def save_students
   # opent the file for writting
   file = File.open("students.csv", "w")
@@ -111,18 +111,30 @@ def save_students
   file.close
 end
 
-def load_students
+def load_students(filename = "students.csv")
+  puts "Enter the file name you want to load"
   file = File.open("students.csv", "r")
   file.readlines.each do |line|
   name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+  $student_name = name
+  push_students_to_array
   end
   file.close
 end
 
-def print_footer
-  puts "Overall, we have #{@students.count} great students"
+def try_load_students
+  filename = ARGV.first # first agrument from the command ling
+  return if filename.nil? #get out of the menthod if it isn't given
+  if File.existis?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count}from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
 end
 
-#nothing happens until we call the methods
+data = __FILE__
+puts File.read(data)
+try_load_students
 interactive_menu
